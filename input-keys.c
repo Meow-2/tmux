@@ -417,7 +417,10 @@ int
 input_key(struct screen *s, struct bufferevent *bev, key_code key)
 {
 	struct input_key_entry	*ike;
-	key_code		 justkey, newkey, outkey;
+	/* key_code		 justkey, newkey, outkey; */
+
+    key_code		 justkey, newkey, outkey, modifiers;
+
 	struct utf8_data	 ud;
 	char			 tmp[64], modifier;
 
@@ -518,7 +521,16 @@ input_key(struct screen *s, struct bufferevent *bev, key_code key)
 		return (input_key(s, bev, key & ~KEYC_CTRL));
 	}
 	outkey = (key & KEYC_MASK_KEY);
-	switch (key & KEYC_MASK_MODIFIERS) {
+
+	/* switch (key & KEYC_MASK_MODIFIERS) { */
+
+    modifiers = (key & KEYC_MASK_MODIFIERS);
+    if (outkey < ' ') {
+        outkey = 64 + outkey;
+        modifiers |= KEYC_CTRL;
+    }
+	switch (modifiers) {
+
 	case KEYC_SHIFT:
 		modifier = '2';
 		break;
